@@ -2,19 +2,28 @@ import logging
 import os
 import pandas as pd
 
-path_dados = os.getcwd() + '/data/'
+class ETLProntuarios():
 
-def merge_dados_prontuarios(**kwargs):
+	def __init__(self):
+		self.path_dados = os.getcwd() + '/data/'
 
-	logging.info('Leitura dos dados')
-	prontuarios = pd.read_csv(path_dados + 'raw/prontuarios-com-horarios.csv')
-	usuarios = pd.read_csv(path_dados + 'raw/prontuarios-com-horarios.csv')
+	def merge_dados_prontuarios(self):
+		logging.info('Leitura dos dados')
+		prontuarios = self.get_dados_prontuarios()
+		usuarios = self.get_dados_controle_usuarios()
 
-	logging.info('Merge dos dados')
-	dados = pd.merge(prontuarios, usuarios, how='left', on=['num_prontuario'])
-	dados.to_csv(path_dados + 'processed/prontuarios.csv')
+		logging.info('Merge dos dados')
+		dados = pd.merge(prontuarios, usuarios, how='left', on=['num_prontuario'])
+		dados.to_csv(self.path_dados + 'processed/prontuarios.csv')
 
-def get_dados_prontuarios(**kwargs):
+	def get_dados_prontuarios(self):
+		return pd.read_csv(self.path_dados + 'raw/prontuarios-com-horarios.csv')
 
-	logging.info('Leitura dos dados gerados')
-	return pd.read_csv(path_dados + 'processed/prontuarios.csv')
+	def get_dados_controle_usuarios(self):
+		return pd.read_csv(self.path_dados + 'raw/prontuario-controle-usuarios.csv')
+
+	def get_processed_data(self):
+		logging.info('Leitura dos dados gerados')
+		prontuarios = pd.read_csv(self.path_dados + 'processed/prontuarios.csv')
+		print("%d prontuários no total." % prontuarios.shape[0])
+
