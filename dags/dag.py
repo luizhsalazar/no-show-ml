@@ -6,7 +6,7 @@ from src.data.etl_prontuarios import merge_dados_prontuarios, get_dados_prontuar
 args = {
     'owner': 'airflow',
     'start_date': airflow.utils.dates.days_ago(1),      # this in combination with catchup=False ensures the DAG being triggered from the current date onwards along the set interval
-    'provide_context': True,                            # this is set to True as we want to pass variables on from one task to another
+    'provide_context': False,                            # this is set to True as we want to pass variables on from one task to another
 }
 
 dag = DAG(
