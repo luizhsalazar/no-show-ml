@@ -1,12 +1,14 @@
 version: '3.7'
 services:
     postgres:                                           # create postgres container
-        image: postgres:9.6
+        image: postgres:alpine
         container_name: postgres_container
         environment:
             - POSTGRES_USER=airflow
             - POSTGRES_PASSWORD=airflow
             - POSTGRES_DB=airflow
+        ports:
+            - "5436:5436"
 
     airflow:                                            # create airflow container
         build: './airflow_docker'                       # construct the container along the Dockerfile in this folder
@@ -30,10 +32,10 @@ services:
             timeout: 30s
             retries: 3
 
-    # mlflow:                                             # create a MLFlow container
-    #     build: './mlflow_docker'                        # construct the container along the Dockerfile in this folder
-    #     container_name: mlflow_container
-    #     ports:
-    #         - "5000:5000"                               # expose port
-    #     command: 'mlflow server --backend-store-uri ./mlflow --host 0.0.0.0 --port 5000'
+    mlflow:                                             # create a MLFlow container
+        build: './mlflow_docker'                        # construct the container along the Dockerfile in this folder
+        container_name: mlflow_container
+        ports:
+            - "5000:5000"                               # expose port
+        command: 'mlflow server --backend-store-uri ./mlflow --host 0.0.0.0 --port 5000'
 
