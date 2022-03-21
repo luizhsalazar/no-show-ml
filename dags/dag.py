@@ -1,7 +1,8 @@
 import airflow
 from airflow.models import DAG
 from airflow.operators.python_operator import PythonOperator
-from src.data.etl_prontuarios import ETLProntuarios
+from src.data.etl_prontuarios_load import ETLProntuariosLoad
+from src.preprocessing.etl_prontuarios_preprocess import ETLProntuariosPreprocess
 
 args = {
     'owner': 'airflow',
@@ -9,7 +10,8 @@ args = {
     'provide_context': False,                            # this is set to True as we want to pass variables on from one task to another
 }
 
-etl = ETLProntuarios()
+etl_load = ETLProntuariosLoad()
+etl_preprocess = ETLProntuariosPreprocess(etl_load)
 
 dag = DAG(
     dag_id='dag_prontuarios',
@@ -20,14 +22,14 @@ dag = DAG(
 
 task1 = PythonOperator(
     task_id='get_dados_prontuarios',
-    python_callable=etl.merge_dados_prontuarios,        # function to be executed
+    python_callable=etl_load.merge_dados_prontuarios,        # function to be executed
     dag=dag,
 )
 
 task2 = PythonOperator(
-    task_id='get_dados_processados',
-    python_callable=etl.get_processed_data,
+    task_id='rename_columns',
+    python_callable=etl_preprocess.rename_columns,
     dag=dag,
 )
 
-task1 >> task2                  # set task priority
+task1 >> task2                # set task priority

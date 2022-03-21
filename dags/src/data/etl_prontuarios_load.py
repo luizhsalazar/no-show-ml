@@ -2,7 +2,7 @@ import logging
 import os
 import pandas as pd
 
-class ETLProntuarios():
+class ETLProntuariosLoad():
 
 	def __init__(self):
 		self.path_dados = os.getcwd() + '/data/'
@@ -14,7 +14,7 @@ class ETLProntuarios():
 
 		logging.info('Merge dos dados')
 		dados = pd.merge(prontuarios, usuarios, how='left', on=['num_prontuario'])
-		dados.to_csv(self.path_dados + 'processed/prontuarios.csv')
+		dados.to_csv(self.path_dados + 'processed/prontuarios.csv', index=False)
 
 	def get_dados_prontuarios(self):
 		return pd.read_csv(self.path_dados + 'raw/prontuarios-com-horarios.csv')
@@ -26,4 +26,5 @@ class ETLProntuarios():
 		logging.info('Leitura dos dados gerados')
 		prontuarios = pd.read_csv(self.path_dados + 'processed/prontuarios.csv')
 		print("%d prontuários no total." % prontuarios.shape[0])
+		return prontuarios
 
