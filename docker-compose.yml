@@ -10,8 +10,8 @@ services:
         ports:
             - "5436:5436"
 
-    airflow:                                            # create airflow container
-        build: './.docker/airflow'                       # construct the container along the Dockerfile in this folder
+    airflow:
+        build: './.docker/airflow'
         container_name: airflow_container
         restart: always
         depends_on:
@@ -19,12 +19,12 @@ services:
         environment:
             - LOAD_EX=n
             - EXECUTOR=Local
-        volumes:                                        # mount the following local folders
+        volumes:
             - ./dags:/usr/local/airflow/dags
             - ./data:/usr/local/airflow/data
-            # - ./models:/usr/local/airflow/models
+            - ./models:/usr/local/airflow/models # Volume em que o modelo gerado é armazenado
         ports:
-            - "8080:8080"                               # expose port
+            - "8080:8080"
         command: webserver
         healthcheck:
             test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
@@ -32,10 +32,13 @@ services:
             timeout: 30s
             retries: 3
 
-    mlflow:                                             # create a MLFlow container
-        build: './.docker/mlflow'                        # construct the container along the Dockerfile in this folder
+    mlflow:
+        build: './.docker/mlflow'
         container_name: mlflow_container
         ports:
-            - "5000:5000"                               # expose port
-        command: 'mlflow server --backend-store-uri ./mlflow --host 0.0.0.0 --port 5000'
-
+            - "5000:5000"
+        # Volume compartilhado entre o Airflow (que gera o model)
+        # e o MLflow (que faz a leitura)
+        # * --default-artifact-root ./models
+        volumes:
+            - "./models:/models"

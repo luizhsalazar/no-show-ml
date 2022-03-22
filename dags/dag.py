@@ -1,6 +1,7 @@
 import airflow
 from airflow.models import DAG
 from airflow.operators.python_operator import PythonOperator
+from src.models.train_model import train_model
 from src.data.etl_prontuarios_load import ETLProntuariosLoad
 from src.preprocessing.etl_prontuarios_preprocess import ETLProntuariosPreprocess
 
@@ -32,4 +33,10 @@ task2 = PythonOperator(
     dag=dag,
 )
 
-task1 >> task2                # set task priority
+task3 = PythonOperator(
+    task_id='train_model',
+    python_callable=train_model,
+    dag=dag,
+)
+
+task1 >> task2 >> task3               # set task priority
