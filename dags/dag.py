@@ -39,4 +39,4 @@ task3 = PythonOperator(
     dag=dag,
 )
 
-task1 >> task2 >> task3               # set task priority
+task1 >> task2 >> task3
