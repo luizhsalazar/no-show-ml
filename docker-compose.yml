@@ -42,3 +42,11 @@ services:
         # * --default-artifact-root ./models
         volumes:
             - "./models:/models"
+
+    # mlflow-model-api:
+    #     build: './.docker/mlflow_model_api'
+    #     container_name: mlflow_model_api_container
+    #     ports:
+    #         - "5001:5001"
+    #     volumes:
+    #         - "./models:/models"

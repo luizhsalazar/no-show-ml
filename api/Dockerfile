@@ -3,6 +3,8 @@ FROM python:3.9
 WORKDIR /code
 
 COPY ./requirements.txt /code/requirements.txt
+COPY ./models/ /code/models/
+COPY ./casas_X.csv /code/
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
